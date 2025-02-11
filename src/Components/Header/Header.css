@@ -1,0 +1,24 @@
+.main-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 5px 20px;
+}
+.main-nav-item {
+      color: #2c3e50;
+      text-decoration: none;
+      font-weight: bold;
+      transition: color 0.3s ease;
+}
+.main-nav-logo-image {
+      max-width: 100%;
+      width: 200px;
+}
+.main-nav-item:hover {
+      text-decoration: underline;
+      cursor: pointer;
+}
+
+.main-nav-out a {
+      padding-left: 0.7rem;
+}
