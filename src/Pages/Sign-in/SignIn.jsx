@@ -1,30 +1,112 @@
 import { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { login } from '../../redux/userSlice';
+import { login, logout, useConnectUser, saveUserToLocalStorage, getUserFromLocalStorage, removeUserFromLocalStorage } from '../../redux/authSlice';
+import axios from 'axios';
 import './SignIn.css';
 
 function SignIn() {
-      const [username, setUsername] = useState('');
+      const [email, setEmail] = useState('');
       const [password, setPassword] = useState('');
+      const [rememberMe, setRememberMe] = useState(false);
       const navigate = useNavigate();
       const dispatch = useDispatch();
-      const user = useSelector((state) => state.user.user);
+      const user = useConnectUser();
+
+      //  Vérifie si un utilisateur est stocké et le connecte automatiquement
+      useEffect(() => {
+            const storedUser = getUserFromLocalStorage();
+            if (storedUser) {
+                  dispatch(login(storedUser));
+                  navigate('/sign-in/user');
+            }
+      }, [dispatch, navigate]);
+
+      //  Redirection si l'utilisateur est connecté
       useEffect(() => {
             if (user) {
                   navigate('/sign-in/user');
             }
       }, [user, navigate]);
 
-      const handleSubmit = (e) => {
+      // Fonction d'authentification avec l'API
+      const authenticateUser = async (email, password) => {
+            try {
+                  const response = await axios.post(
+                        'http://localhost:3001/api/v1/user/login',
+                        { email, password },
+                        {
+                              headers: { 'Content-Type': 'application/json' },
+                        }
+                  );
+
+                  return response.data.body.token; // Retourne le token JWT
+            } catch (error) {
+                  console.error("Erreur d'authentification:", error);
+                  return null;
+            }
+      };
+
+      //  Fonction pour récupérer le profil utilisateur
+      const fetchUserProfile = async (token) => {
+            try {
+                  const response = await axios.post(
+                        'http://localhost:3001/api/v1/user/profile',
+                        {},
+                        {
+                              headers: {
+                                    Authorization: `Bearer ${token}`,
+                                    'Content-Type': 'application/json',
+                              },
+                        }
+                  );
+                  return response.data.body;
+            } catch (error) {
+                  console.error('Erreur lors de la récupération du profil:', error);
+                  return null;
+            }
+      };
+
+      // Gestion de la soumission du formulaire de connexion
+      const handleSubmit = async (e) => {
             e.preventDefault();
 
-            if (username === 'tony@stark.com' && password === 'password123') {
-                  dispatch(login({ username }));
-                  navigate('/sign-in/user');
-            } else {
-                  alert('Invalid username or password!');
+            try {
+                  const token = await authenticateUser(email, password);
+
+                  if (!token) {
+                        alert('Email ou mot de passe invalide !');
+                        return;
+                  }
+
+                  const userProfile = await fetchUserProfile(token);
+
+                  if (userProfile) {
+                        const userData = { ...userProfile, token };
+
+                        dispatch(login(userData));
+
+                        if (rememberMe) {
+                              saveUserToLocalStorage(userData);
+                        } else {
+                              removeUserFromLocalStorage();
+                        }
+
+                        navigate('/sign-in/user');
+                  } else {
+                        alert('Impossible de récupérer les informations utilisateur.');
+                  }
+            } catch (error) {
+                  console.error('Erreur lors de la connexion :', error);
+                  alert('Une erreur est survenue lors de la connexion.');
             }
+      };
+
+      //  Déconnexion de l'utilisateur
+      const handleLogout = () => {
+            dispatch(logout());
+            removeUserFromLocalStorage();
+            navigate('/');
       };
 
       return (
@@ -34,15 +116,15 @@ function SignIn() {
                         <h1>Sign In</h1>
                         <form onSubmit={handleSubmit}>
                               <div className="input-wrapper">
-                                    <label htmlFor="username">Username</label>
-                                    <input type="text" id="username" value={username} onChange={(e) => setUsername(e.target.value)} />
+                                    <label htmlFor="email">Email</label>
+                                    <input type="text" id="email" value={email} onChange={(e) => setEmail(e.target.value)} />
                               </div>
                               <div className="input-wrapper">
                                     <label htmlFor="password">Password</label>
                                     <input type="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} />
                               </div>
                               <div className="input-remember">
-                                    <input type="checkbox" id="remember-me" />
+                                    <input type="checkbox" id="remember-me" checked={rememberMe} onChange={(e) => setRememberMe(e.target.checked)} />
                                     <label htmlFor="remember-me">Remember me</label>
                               </div>
                               <button type="submit" className="sign-in-button">
@@ -50,6 +132,12 @@ function SignIn() {
                               </button>
                         </form>
                   </section>
+
+                  {user && (
+                        <button onClick={handleLogout} className="logout-button">
+                              Log out
+                        </button>
+                  )}
             </main>
       );
 }
