@@ -34,7 +34,7 @@ export const removeUserFromLocalStorage = () => {
 };
 
 // Fonction pour récupérer le profil utilisateur via l'API avec Axios
-export const fetchUserProfile = async (token) => {
+export const getUserProfile = (token) => async (dispatch) => {
       try {
             const response = await axios.post(
                   'http://localhost:3001/api/v1/user/profile',
@@ -47,22 +47,41 @@ export const fetchUserProfile = async (token) => {
                   }
             );
 
-            return response.data.body;
+            dispatch(setUserInfo(response.data.body));
       } catch (error) {
             console.error('Erreur lors de la récupération du profil:', error);
-            return null;
       }
 };
+// Fonction d'authentification avec l'API
+export const authenticateUser = (email, password) => async (dispatch) => {
+      try {
+            const response = await axios.post(
+                  'http://localhost:3001/api/v1/user/login',
+                  { email, password },
+                  {
+                        headers: { 'Content-Type': 'application/json' },
+                  }
+            );
 
-// État initial
-const initialState = {
-      connectUser: getUserFromLocalStorage(),
+            const token = response.data.body.token;
+
+            if (token) {
+                  dispatch(login({ email, token }));
+                  return token;
+            }
+            throw new Error('Email ou mot de passe incorrect');
+      } catch (error) {
+            console.error("Erreur d'authentification:", error);
+            throw error;
+      }
 };
-
 // Création du Slice Redux
 const userSlice = createSlice({
       name: 'user',
-      initialState,
+      initialState: {
+            connectUser: getUserFromLocalStorage(),
+            userInfo: null,
+      },
       reducers: {
             login: (state, action) => {
                   state.connectUser = action.payload;
@@ -70,15 +89,19 @@ const userSlice = createSlice({
             },
             logout: (state) => {
                   state.connectUser = null;
+                  state.userInfo = null;
                   removeUserFromLocalStorage();
+            },
+            setUserInfo: (state, action) => {
+                  state.userInfo = action.payload;
             },
       },
 });
 
 // Actions Redux
-export const { login, logout } = userSlice.actions;
+export const { login, logout, setUserInfo } = userSlice.actions;
 
 // Hook pour récupérer l'utilisateur connecté
 export const useConnectUser = () => useSelector((state) => state.user.connectUser);
-
+export const useUserInfo = () => useSelector((state) => state.user.userInfo);
 export default userSlice.reducer;

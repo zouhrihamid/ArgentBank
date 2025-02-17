@@ -1,48 +1,26 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { logout, useConnectUser } from '../../redux/authSlice';
-import { useEffect, useState } from 'react';
+import { logout, useConnectUser, getUserProfile, useUserInfo } from '../../redux/authSlice';
+import { useEffect } from 'react';
 import Logo from '../../assets/argentBankLogo.png';
 import './Header.css';
-import axios from 'axios';
 
 function Header() {
       const navigate = useNavigate();
       const dispatch = useDispatch();
       const user = useConnectUser();
-      const [userInfo, setUserInfo] = useState(null);
+      const userInfo = useUserInfo();
 
-      // Récupération des infos utilisateur depuis l'API
+      // Récupération des infos utilisateur via Redux Thunk
       useEffect(() => {
-            if (!user || !user.token) return;
-
-            const fetchUserProfile = async () => {
-                  try {
-                        setUserInfo(null);
-
-                        const response = await axios.post(
-                              'http://localhost:3001/api/v1/user/profile',
-                              {},
-                              {
-                                    headers: {
-                                          Authorization: `Bearer ${user.token}`,
-                                          'Content-Type': 'application/json',
-                                    },
-                              }
-                        );
-
-                        setUserInfo(response.data.body);
-                  } catch (error) {
-                        console.error('Erreur lors de la récupération du profil:', error.response?.data?.message || error.message);
-                  }
-            };
-
-            fetchUserProfile();
-      }, [user]);
+            if (user && user.token) {
+                  dispatch(getUserProfile(user.token));
+            }
+      }, [user, dispatch]);
 
       const handleLogout = () => {
             dispatch(logout());
-            navigate('/');
+            navigate('/sign-in');
       };
 
       return (
@@ -56,9 +34,9 @@ function Header() {
                                     <i className="fa fa-user-circle"></i>
                                     {userInfo ? userInfo.firstName : 'User'}
                               </span>
-                              <button onClick={handleLogout} className="main-nav-item" style={{ cursor: 'pointer', background: 'none', border: 'none', color: 'inherit' }}>
+                              <a onClick={handleLogout} className="main-nav-item" style={{ cursor: 'pointer', background: 'none', border: 'none', color: 'inherit' }}>
                                     <i className="fa fa-sign-out"></i> Sign out
-                              </button>
+                              </a>
                         </div>
                   ) : (
                         <Link to="/sign-in" className="main-nav-item">

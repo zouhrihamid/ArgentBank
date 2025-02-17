@@ -1,14 +1,16 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useConnectUser } from '../../redux/authSlice';
-import { fetchUserProfile } from '../../redux/authSlice';
+import { useConnectUser, getUserProfile, useUserInfo } from '../../redux/authSlice';
+
 import './Profil.css';
+import { useDispatch } from 'react-redux';
 
 function User() {
       const navigate = useNavigate();
       const user = useConnectUser();
-      const [userInfo, setUserInfo] = useState(null);
-      const [loading, setLoading] = useState(true);
+      const dispatch = useDispatch();
+
+      const userInfo = useUserInfo();
 
       useEffect(() => {
             if (!user || !user.token) {
@@ -16,20 +18,10 @@ function User() {
                   return;
             }
 
-            const getUserData = async () => {
-                  const data = await fetchUserProfile(user.token);
-                  if (data) {
-                        setUserInfo(data);
-                  } else {
-                        navigate('/');
-                  }
-                  setLoading(false);
-            };
+            dispatch(getUserProfile(user.token));
+      }, [user, dispatch, navigate]);
 
-            getUserData();
-      }, [user, navigate]);
-
-      if (loading) return <h1>Loading...</h1>;
+      if (!userInfo) return <h1>Loading...</h1>;
 
       return (
             <main className="main bg-dark">

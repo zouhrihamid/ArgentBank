@@ -6,6 +6,7 @@ const store = configureStore({
             user: userReducer,
       },
       devTools: true,
+      middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
 });
 
 export default store;

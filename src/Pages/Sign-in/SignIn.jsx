@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { login, logout, useConnectUser, saveUserToLocalStorage, getUserFromLocalStorage, removeUserFromLocalStorage } from '../../redux/authSlice';
-import axios from 'axios';
+import { login, logout, useConnectUser, saveUserToLocalStorage, getUserFromLocalStorage, removeUserFromLocalStorage, getUserProfile, authenticateUser } from '../../redux/authSlice';
+
 import './SignIn.css';
 
 function SignIn() {
@@ -29,57 +29,14 @@ function SignIn() {
             }
       }, [user, navigate]);
 
-      // Fonction d'authentification avec l'API
-      const authenticateUser = async (email, password) => {
-            try {
-                  const response = await axios.post(
-                        'http://localhost:3001/api/v1/user/login',
-                        { email, password },
-                        {
-                              headers: { 'Content-Type': 'application/json' },
-                        }
-                  );
-
-                  return response.data.body.token; // Retourne le token JWT
-            } catch (error) {
-                  console.error("Erreur d'authentification:", error);
-                  return null;
-            }
-      };
-
-      //  Fonction pour récupérer le profil utilisateur
-      const fetchUserProfile = async (token) => {
-            try {
-                  const response = await axios.post(
-                        'http://localhost:3001/api/v1/user/profile',
-                        {},
-                        {
-                              headers: {
-                                    Authorization: `Bearer ${token}`,
-                                    'Content-Type': 'application/json',
-                              },
-                        }
-                  );
-                  return response.data.body;
-            } catch (error) {
-                  console.error('Erreur lors de la récupération du profil:', error);
-                  return null;
-            }
-      };
-
       // Gestion de la soumission du formulaire de connexion
       const handleSubmit = async (e) => {
             e.preventDefault();
 
             try {
-                  const token = await authenticateUser(email, password);
+                  const token = await dispatch(authenticateUser(email, password));
 
-                  if (!token) {
-                        alert('Email ou mot de passe invalide !');
-                        return;
-                  }
-
-                  const userProfile = await fetchUserProfile(token);
+                  const userProfile = await getUserProfile(token);
 
                   if (userProfile) {
                         const userData = { ...userProfile, token };
@@ -93,12 +50,9 @@ function SignIn() {
                         }
 
                         navigate('/sign-in/user');
-                  } else {
-                        alert('Impossible de récupérer les informations utilisateur.');
                   }
             } catch (error) {
                   console.error('Erreur lors de la connexion :', error);
-                  alert('Une erreur est survenue lors de la connexion.');
             }
       };
 
