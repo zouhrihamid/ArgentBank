@@ -2,20 +2,42 @@
       display: flex;
       flex-direction: column;
       text-align: left;
-      margin-bottom: 0px;
+      margin-bottom: 1rem;
 }
 
 .input-wrapper-up label {
       font-weight: bold;
-      font-size: 0.8rem;
-      padding-bottom: 0px;
-      margin-bottom: 0px;
 }
 
 .input-wrapper-up input {
-      padding: 2px;
-      font-size: 1rem;
+      padding: 5px;
+      font-size: 1.2rem;
 }
+
+.input-wrapper label {
+      font-weight: bold;
+}
+
 .create-account {
       font-size: 1.2rem;
+}
+.sign-up-content {
+      box-sizing: border-box;
+      background-color: white;
+      width: 300px;
+      margin: 0 auto;
+      margin-top: 3rem;
+      padding: 2rem;
+      margin-bottom: 1rem;
+}
+.sign-up-button {
+      display: block;
+      width: 100%;
+      padding: 8px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      margin-top: 1rem;
+      border: 2px solid #00bc77;
+      background-color: #00bc77;
+      color: #fff;
 }

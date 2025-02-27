@@ -53,7 +53,7 @@ const ProfileUpdateForm = () => {
       };
 
       return (
-            <div className="profile-update-form">
+            <div className="main bg-dark">
                   <section className="sign-in-content">
                         <h2>Modifier votre profil</h2>
 
@@ -78,7 +78,9 @@ const ProfileUpdateForm = () => {
                                                 <label>Email :</label>
                                                 <input type="email" name="email" value={formData.email} onChange={handleChange} required />
                                           </div> */}
-                                          <button type="submit">Mettre à jour</button>
+                                          <button type="submit" className="update-button">
+                                                Mettre à jour
+                                          </button>
                                     </form>
                               </>
                         )}

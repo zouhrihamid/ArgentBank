@@ -3,7 +3,6 @@ import { createRoot } from 'react-dom/client';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { Provider, useSelector } from 'react-redux';
 import store from '../src/redux/store';
-
 import './index.css';
 import Header from './Components/Header/Header';
 import Footer from './Components/Footer/Footer';

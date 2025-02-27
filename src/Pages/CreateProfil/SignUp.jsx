@@ -61,7 +61,7 @@ const SignUp = () => {
       };
 
       return (
-            <div className="profile-update-form">
+            <div className="main bg-dark">
                   <section className="sign-in-content">
                         <h2 className="create-account">{success ? '' : 'Créer un compte'}</h2>
 
@@ -90,7 +90,9 @@ const SignUp = () => {
                                                 <label>Mot de passe :</label>
                                                 <input type="password" name="password" value={formData.password} onChange={handleChange} required />
                                           </div>
-                                          <button type="submit">Créer un compte</button>
+                                          <button type="submit" className="sign-up-button ">
+                                                Créer un compte
+                                          </button>
                                     </form>
                               </>
                         )}
