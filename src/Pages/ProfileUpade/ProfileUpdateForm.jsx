@@ -60,7 +60,9 @@ const ProfileUpdateForm = () => {
                         {success ? (
                               <div className="success-message">
                                     <p>✅ Profil mis à jour avec succès !</p>
-                                    <button onClick={handleClose}>Fermer</button>
+                                    <button onClick={handleClose} className="button-common">
+                                          Fermer
+                                    </button>
                               </div>
                         ) : (
                               <>
@@ -78,7 +80,7 @@ const ProfileUpdateForm = () => {
                                                 <label>Email :</label>
                                                 <input type="email" name="email" value={formData.email} onChange={handleChange} required />
                                           </div> */}
-                                          <button type="submit" className="update-button">
+                                          <button type="submit" className="button-common">
                                                 Mettre à jour
                                           </button>
                                     </form>

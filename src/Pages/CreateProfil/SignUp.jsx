@@ -68,7 +68,9 @@ const SignUp = () => {
                         {success ? (
                               <div className="success-message">
                                     <p>✅ Profil créé avec succès !</p>
-                                    <button onClick={handleClose}>Fermer</button>
+                                    <button onClick={handleClose} className="button-common">
+                                          Fermer
+                                    </button>
                               </div>
                         ) : (
                               <>
@@ -90,7 +92,7 @@ const SignUp = () => {
                                                 <label>Mot de passe :</label>
                                                 <input type="password" name="password" value={formData.password} onChange={handleChange} required />
                                           </div>
-                                          <button type="submit" className="sign-up-button ">
+                                          <button type="submit" className="button-common ">
                                                 Créer un compte
                                           </button>
                                     </form>

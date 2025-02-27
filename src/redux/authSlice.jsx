@@ -55,7 +55,7 @@ export const getUserProfile = (token) => async (dispatch) => {
 };
 
 //creer un utilisateur
-export const createUserProfile = createAsyncThunk('user/signUp', async ({ firstName, lastName, email, password }, { rejectWithValue }) => {
+export const createUserProfile = createAsyncThunk('user/signin', async ({ firstName, lastName, email, password }, { rejectWithValue }) => {
       try {
             const response = await axios.post(
                   'http://localhost:3001/api/v1/user/signup',
