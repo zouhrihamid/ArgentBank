@@ -1,0 +1,21 @@
+.input-wrapper-up {
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+      margin-bottom: 0px;
+}
+
+.input-wrapper-up label {
+      font-weight: bold;
+      font-size: 0.8rem;
+      padding-bottom: 0px;
+      margin-bottom: 0px;
+}
+
+.input-wrapper-up input {
+      padding: 2px;
+      font-size: 1rem;
+}
+.create-account {
+      font-size: 1.2rem;
+}

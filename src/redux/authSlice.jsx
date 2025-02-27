@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { useSelector } from 'react-redux';
 import axios from 'axios'; // Importer Axios
 
@@ -35,6 +35,7 @@ export const removeUserFromLocalStorage = () => {
 
 // Fonction pour récupérer le profil utilisateur via l'API avec Axios
 export const getUserProfile = (token) => async (dispatch) => {
+      console.log('Calling getUserProfile with token:', token);
       try {
             const response = await axios.post(
                   'http://localhost:3001/api/v1/user/profile',
@@ -52,6 +53,56 @@ export const getUserProfile = (token) => async (dispatch) => {
             console.error('Erreur lors de la récupération du profil:', error);
       }
 };
+
+//creer un utilisateur
+export const createUserProfile = createAsyncThunk('user/signUp', async ({ firstName, lastName, email, password }, { rejectWithValue }) => {
+      try {
+            const response = await axios.post(
+                  'http://localhost:3001/api/v1/user/signup',
+                  { firstName, lastName, email, password },
+                  {
+                        headers: { 'Content-Type': 'application/json' },
+                  }
+            );
+            return response.data;
+      } catch (error) {
+            return rejectWithValue(error.response?.data || 'Une erreur est survenue');
+      }
+});
+
+//update profil
+export const updateUserProfile = (updatedData, token) => async (dispatch) => {
+      try {
+            const response = await axios.put('http://localhost:3001/api/v1/user/profile', updatedData, {
+                  headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                  },
+            });
+
+            dispatch(setUserInfo(response.data.user));
+      } catch (error) {
+            console.error('Erreur lors de la mise à jour du profil :', error.response?.data || error.message);
+      }
+};
+
+export const signUp = createAsyncThunk('user/signUp', async ({ firstName, lastName, email, password }, { rejectWithValue }) => {
+      try {
+            const response = await axios.post(
+                  'http://localhost:3001/api/v1/user/signup',
+                  { firstName, lastName, email, password },
+                  {
+                        headers: { 'Content-Type': 'application/json' },
+                  }
+            );
+
+            return response.data;
+      } catch (error) {
+            console.error(' Erreur API Signup :', error.response?.data || error);
+            return rejectWithValue(error.response?.data || 'Erreur lors de l’inscription');
+      }
+});
+
 // Fonction d'authentification avec l'API
 export const authenticateUser = (email, password) => async (dispatch) => {
       try {

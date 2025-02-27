@@ -3,13 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { useConnectUser, getUserProfile, useUserInfo } from '../../redux/authSlice';
 
 import './Profil.css';
-import { useDispatch } from 'react-redux';
 
 function User() {
       const navigate = useNavigate();
-      const user = useConnectUser();
-      const dispatch = useDispatch();
 
+      const user = useConnectUser();
       const userInfo = useUserInfo();
 
       useEffect(() => {
@@ -18,8 +16,10 @@ function User() {
                   return;
             }
 
-            dispatch(getUserProfile(user.token));
-      }, [user, dispatch, navigate]);
+            if (!userInfo && user.token) {
+                  getUserProfile(user.token);
+            }
+      }, [user, userInfo, navigate]);
 
       if (!userInfo) return <h1>Loading...</h1>;
 
@@ -31,7 +31,9 @@ function User() {
                               <br />
                               {userInfo ? `${userInfo.firstName} ${userInfo.lastName}` : 'User'}!
                         </h1>
-                        <button className="edit-button">Edit Name</button>
+                        <button className="edit-button" onClick={() => navigate('/profile/update')}>
+                              Edit Name
+                        </button>
                   </div>
 
                   <h2 className="sr-only">Accounts</h2>

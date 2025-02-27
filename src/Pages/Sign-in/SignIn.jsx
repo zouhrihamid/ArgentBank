@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { login, logout, useConnectUser, saveUserToLocalStorage, getUserFromLocalStorage, removeUserFromLocalStorage, getUserProfile, authenticateUser } from '../../redux/authSlice';
+import { login, useConnectUser, saveUserToLocalStorage, getUserFromLocalStorage, removeUserFromLocalStorage, getUserProfile, authenticateUser } from '../../redux/authSlice';
 
 import './SignIn.css';
 
@@ -9,6 +9,7 @@ function SignIn() {
       const [email, setEmail] = useState('');
       const [password, setPassword] = useState('');
       const [rememberMe, setRememberMe] = useState(false);
+      const [error, setError] = useState('');
       const navigate = useNavigate();
       const dispatch = useDispatch();
       const user = useConnectUser();
@@ -32,10 +33,13 @@ function SignIn() {
       // Gestion de la soumission du formulaire de connexion
       const handleSubmit = async (e) => {
             e.preventDefault();
+            setError('');
 
             try {
                   const token = await dispatch(authenticateUser(email, password));
-
+                  if (!token) {
+                        throw new Error('Email ou mot de passe incorrect');
+                  }
                   const userProfile = await getUserProfile(token);
 
                   if (userProfile) {
@@ -52,17 +56,20 @@ function SignIn() {
                         navigate('/sign-in/user');
                   }
             } catch (error) {
-                  console.error('Erreur lors de la connexion :', error);
+                  setError('Email ou mot de passe incorrect. Veuillez réessayer.');
+                  console.error(error);
             }
       };
 
-      //  Déconnexion de l'utilisateur
-      const handleLogout = () => {
-            dispatch(logout());
-            removeUserFromLocalStorage();
-            navigate('/');
+      // //  Déconnexion de l'utilisateur
+      // const handleLogout = () => {
+      //       dispatch(logout());
+      //       removeUserFromLocalStorage();
+      //       navigate('/');
+      // };
+      const handleSignUp = () => {
+            navigate('/sign-up');
       };
-
       return (
             <main className="main bg-dark">
                   <section className="sign-in-content">
@@ -77,21 +84,28 @@ function SignIn() {
                                     <label htmlFor="password">Password</label>
                                     <input type="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} />
                               </div>
+                              {error && <p className="error-message">{error}</p>}
                               <div className="input-remember">
                                     <input type="checkbox" id="remember-me" checked={rememberMe} onChange={(e) => setRememberMe(e.target.checked)} />
                                     <label htmlFor="remember-me">Remember me</label>
                               </div>
+
                               <button type="submit" className="sign-in-button">
                                     Sign In
                               </button>
+
+                              <p className="create-user" onClick={handleSignUp}>
+                                    {' '}
+                                    Créer un compte
+                              </p>
                         </form>
                   </section>
-
+                  {/* 
                   {user && (
                         <button onClick={handleLogout} className="logout-button">
                               Log out
                         </button>
-                  )}
+                  )} */}
             </main>
       );
 }

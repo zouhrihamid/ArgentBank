@@ -25,7 +25,10 @@ body {
       background-color: #00bc77;
       color: #fff;
 }
-
+.sign-in-button:hover {
+      text-decoration: underline;
+      cursor: pointer;
+}
 .sign-in-content {
       box-sizing: border-box;
       background-color: white;
@@ -33,10 +36,11 @@ body {
       margin: 0 auto;
       margin-top: 3rem;
       padding: 2rem;
+      margin-bottom: 1rem;
 }
 
 .sign-in-icon {
-      font-size: 5rem;
+      font-size: 1rem;
 }
 .input-remember {
       display: flex;
@@ -60,4 +64,19 @@ body {
 .input-wrapper input {
       padding: 5px;
       font-size: 1.2rem;
+}
+.create-user {
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+      font-size: 0.8rem;
+      color: #00bc77;
+      text-decoration: underline;
+      cursor: pointer;
+      padding: 0px;
+}
+.error-message {
+      color: red;
+      font-size: 10px;
+      text-align: left;
 }

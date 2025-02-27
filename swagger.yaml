@@ -1,0 +1,133 @@
+swagger: '2.0'
+info:
+      title: Bank Argent Api documentation
+      description: Contains all available API endpoints in this codebase
+      version: 1.0.0
+      termsOfService: 'http://swagger.io/terms/'
+host: localhost:3001
+basePath: /api/v1
+schemes:
+      - http
+
+paths:
+      /transactions:
+            get:
+                  summary: Récupérer les transactions du mois en cours
+                  operationId: getTransactions
+                  produces:
+                        - application/json
+
+                  responses:
+                        '200':
+                              description: Succès - Liste des transactions retournée
+                              schema:
+                                    type: array
+                                    items:
+                                          $ref: '#/definitions/Transaction'
+                        '400':
+                              description: Requête invalide
+
+      /transactions/{transactionId}:
+            get:
+                  summary: Récupérer les détails d'une transaction spécifique
+                  operationId: getTransactionsDetails
+                  parameters:
+                        - name: transactionId
+                          in: path
+                          required: true
+                          type: string
+                          description: Identifiant unique de la transaction
+                  produces:
+                        - application/json
+                  responses:
+                        '200':
+                              description: Succès - Détails de la transaction retournés
+                              schema:
+                                    $ref: '#/definitions/TransactionDetails'
+                        '404':
+                              description: Transaction non trouvée
+
+            put:
+                  summary: Modifier une transaction
+                  operationId: UpdateTransactions
+                  parameters:
+                        - name: transactionId
+                          in: path
+                          required: true
+                          type: string
+                          description: Identifiant unique de la transaction
+                        - in: body
+                          name: body
+                          required: true
+                          schema:
+                                $ref: '#/definitions/UpdateTransaction'
+                  produces:
+                        - application/json
+
+                  responses:
+                        '200':
+                              description: Succès - Transaction mise à jour
+                        '400':
+                              description: Requête invalide
+
+            delete:
+                  summary: Supprimer une transaction
+                  operationId: deleteTransaction
+                  parameters:
+                        - name: transactionId
+                          in: path
+                          required: true
+                          type: string
+                  produces:
+                        - application/json
+                  responses:
+                        '200':
+                              description: Succès - Transaction supprimée
+                        '404':
+                              description: Transaction non trouvée
+
+securityDefinitions:
+      Bearer:
+            type: apiKey
+            name: Authorization
+            in: header
+definitions:
+      Transaction:
+            type: object
+            properties:
+                  id:
+                        type: string
+                        description: Identifiant de l'utilisateur
+
+                  amount:
+                        type: number
+                        format: float
+                        description: Montant de la transaction
+                  balance:
+                        type: number
+                        format: float
+                  accountId:
+                        type: string
+                  date:
+                        type: string
+                        format: date
+                        description: Date de la transaction
+                  description:
+                        type: string
+      TransactionDetails:
+            type: object
+            allOf:
+                  - $ref: '#/definitions/Transaction'
+                  - type: object
+                    properties:
+                          category:
+                                type: string
+                          notes:
+                                type: string
+      UpdateTransaction:
+            type: object
+            properties:
+                  category:
+                        type: string
+                  notes:
+                        type: string

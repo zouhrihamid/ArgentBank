@@ -6,12 +6,14 @@ import store from '../src/redux/store';
 
 import './index.css';
 import Header from './Components/Header/Header';
-import Footer from './components/Footer/Footer';
+import Footer from './Components/Footer/Footer';
 import Home from './Pages/Home/Home';
 import SignIn from './Pages/Sign-in/SignIn';
 import User from './Pages/Profil/Profil';
+import ProfileUpdateForm from './Pages/ProfileUpade/ProfileUpdateForm';
 import './main.css';
 import 'font-awesome/css/font-awesome.min.css';
+import SignUp from './Pages/CreateProfil/SignUp';
 
 export function App() {
       const user = useSelector((state) => state.user.connectUser);
@@ -23,6 +25,8 @@ export function App() {
                         <Route path="/" element={<Home />} />
                         <Route path="/sign-in" element={<SignIn />} />
                         <Route path="/sign-in/user" element={user ? <User /> : <SignIn />} />
+                        <Route path="/profile/update" element={user ? <ProfileUpdateForm /> : <SignIn />} />
+                        <Route path="/sign-up" element={<SignUp />} />
                   </Routes>
                   <Footer />
             </div>
