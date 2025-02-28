@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { logout, useConnectUser, getUserProfile, useUserInfo } from '../../redux/authSlice';
+import { logout, useConnectUser, getUserProfile, useUserInfo } from '../../store/authSlice';
 import { useEffect } from 'react';
 import Logo from '../../assets/argentBankLogo.png';
 import './Header.css';

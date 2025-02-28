@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useConnectUser, getUserProfile, useUserInfo } from '../../redux/authSlice';
+import { useConnectUser, getUserProfile, useUserInfo } from '../../store/authSlice';
 
 import './Profil.css';
 

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { signUp } from '../../redux/authSlice';
+import { signUp } from '../../store/authSlice';
 
 import './SignUp.css';
 
@@ -67,7 +67,7 @@ const SignUp = () => {
 
                         {success ? (
                               <div className="success-message">
-                                    <p>✅ Profil créé avec succès !</p>
+                                    <p>Profil créé avec succès !</p>
                                     <button onClick={handleClose} className="button-common">
                                           Fermer
                                     </button>

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { login, useConnectUser, saveUserToLocalStorage, getUserFromLocalStorage, removeUserFromLocalStorage, getUserProfile, authenticateUser } from '../../redux/authSlice';
+import { login, useConnectUser, saveUserToLocalStorage, getUserFromLocalStorage, removeUserFromLocalStorage, getUserProfile, authenticateUser } from '../../store/authSlice';
 
 import './SignIn.css';
 
@@ -36,37 +36,38 @@ function SignIn() {
             setError('');
 
             try {
-                  const token = await dispatch(authenticateUser(email, password));
-                  if (!token) {
+                  const result = await dispatch(authenticateUser({ email, password }));
+                  console.log('Résultat de authenticateUser:', result);
+
+                  if (!result.payload) {
                         throw new Error('Email ou mot de passe incorrect');
                   }
-                  const userProfile = await getUserProfile(token);
-
-                  if (userProfile) {
-                        const userData = { ...userProfile, token };
-
-                        dispatch(login(userData));
-
-                        if (rememberMe) {
-                              saveUserToLocalStorage(userData);
-                        } else {
-                              removeUserFromLocalStorage();
-                        }
-
-                        navigate('/sign-in/user');
+                  const token = result.payload;
+                  if (!token) {
+                        throw new Error('Token invalide');
                   }
+
+                  const profileResult = await dispatch(getUserProfile(token));
+                  if (profileResult.error) {
+                        console.error('Erreur lors de la récupération du profil:', profileResult.error);
+                        throw new Error('Impossible de récupérer le profil utilisateur');
+                  }
+
+                  const userData = { ...profileResult.payload, token };
+                  dispatch(login(userData));
+
+                  if (rememberMe) {
+                        saveUserToLocalStorage(userData);
+                  } else {
+                        removeUserFromLocalStorage();
+                  }
+                  navigate('/sign-in/user');
             } catch (error) {
-                  setError('Email ou mot de passe incorrect. Veuillez réessayer.');
+                  setError(error.message);
                   console.error(error);
             }
       };
 
-      // //  Déconnexion de l'utilisateur
-      // const handleLogout = () => {
-      //       dispatch(logout());
-      //       removeUserFromLocalStorage();
-      //       navigate('/');
-      // };
       const handleSignUp = () => {
             navigate('/sign-up');
       };

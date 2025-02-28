@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getUserProfile, updateUserProfile } from '../../redux/authSlice';
+import { getUserProfile, updateUserProfile } from '../../store/authSlice';
 import { useNavigate } from 'react-router-dom';
 import './ProfileUpdateForm.css';
 
@@ -43,12 +43,19 @@ const ProfileUpdateForm = () => {
             setError(null);
             setSuccess(false);
 
+            if (!token) {
+                  setError('Token manquant! Veuillez vous reconnecter.');
+                  return;
+            }
+
             try {
-                  await dispatch(updateUserProfile(formData, token));
+                  await dispatch(updateUserProfile({ updatedData: formData, token }));
+
                   await dispatch(getUserProfile(token));
                   setSuccess(true);
-            } catch (error) {
-                  setError('Erreur lors de la mise à jour du profil', error);
+            } catch (err) {
+                  console.error('Erreur lors de la mise à jour du profil:', err);
+                  setError('Erreur lors de la mise à jour du profil. Veuillez réessayer.');
             }
       };
 
@@ -59,7 +66,7 @@ const ProfileUpdateForm = () => {
 
                         {success ? (
                               <div className="success-message">
-                                    <p>✅ Profil mis à jour avec succès !</p>
+                                    <p>Profil mis à jour avec succès !</p>
                                     <button onClick={handleClose} className="button-common">
                                           Fermer
                                     </button>
@@ -76,10 +83,6 @@ const ProfileUpdateForm = () => {
                                                 <label>Nom :</label>
                                                 <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} required />
                                           </div>
-                                          {/* <div className="input-wrapper">
-                                                <label>Email :</label>
-                                                <input type="email" name="email" value={formData.email} onChange={handleChange} required />
-                                          </div> */}
                                           <button type="submit" className="button-common">
                                                 Mettre à jour
                                           </button>
