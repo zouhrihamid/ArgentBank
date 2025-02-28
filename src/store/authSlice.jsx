@@ -62,10 +62,11 @@ export const authenticateUser = createAsyncThunk('user/login', async ({ email, p
 });
 
 // Action pour récupérer le profil utilisateur
-export const getUserProfile = createAsyncThunk('user/getProfile', async (token, { rejectWithValue, dispatch }) => {
+export const getUserProfile = createAsyncThunk('user/getProfile', async (token, { rejectWithValue }) => {
       try {
             const response = await getUserProfileApi(token);
-            dispatch(setUserInfo(response.data.body));
+
+            return response.data.body;
       } catch (error) {
             console.error('Erreur lors de la récupération du profil:', error);
             return rejectWithValue(error.response?.data || 'Erreur de récupération du profil');
@@ -73,10 +74,10 @@ export const getUserProfile = createAsyncThunk('user/getProfile', async (token, 
 });
 
 // Action pour mettre à jour le profil utilisateur
-export const updateUserProfile = createAsyncThunk('user/updateProfile', async ({ updatedData, token }, { rejectWithValue, dispatch }) => {
+export const updateUserProfile = createAsyncThunk('user/updateProfile', async ({ updatedData, token }, { rejectWithValue }) => {
       try {
             const response = await updateUserProfileApi(updatedData, token);
-            dispatch(setUserInfo(response.data.user));
+            return response.data.user;
       } catch (error) {
             console.error('Erreur lors de la mise à jour du profil:', error);
 
@@ -93,6 +94,8 @@ const userSlice = createSlice({
       initialState: {
             connectUser: getUserFromLocalStorage(),
             userInfo: null,
+            loading: false,
+            error: null,
       },
       reducers: {
             login: (state, action) => {
@@ -107,6 +110,57 @@ const userSlice = createSlice({
             setUserInfo: (state, action) => {
                   state.userInfo = action.payload;
             },
+      },
+      extraReducers: (builder) => {
+            builder
+                  .addCase(signUp.pending, (state) => {
+                        state.loading = true;
+                        state.error = null;
+                  })
+                  .addCase(signUp.fulfilled, (state) => {
+                        state.loading = false;
+                  })
+                  .addCase(signUp.rejected, (state, action) => {
+                        state.loading = false;
+                        state.error = action.payload || 'Erreur lors de l’inscription';
+                  })
+                  .addCase(authenticateUser.pending, (state) => {
+                        state.loading = true;
+                        state.error = null;
+                  })
+                  .addCase(authenticateUser.fulfilled, (state) => {
+                        state.loading = false;
+                  })
+                  .addCase(authenticateUser.rejected, (state, action) => {
+                        state.loading = false;
+                        state.error = action.payload || 'Erreur de connexion';
+                  })
+                  .addCase(getUserProfile.pending, (state) => {
+                        state.loading = true;
+                        state.error = null;
+                  })
+                  .addCase(getUserProfile.fulfilled, (state, action) => {
+                        state.loading = false;
+                        state.userInfo = action.payload;
+                  })
+                  .addCase(getUserProfile.rejected, (state, action) => {
+                        console.log('Action rejetée:', action);
+                        state.loading = false;
+                        state.error = action.payload || 'Erreur de récupération du profil';
+                        state.userInfo = null;
+                  })
+                  .addCase(updateUserProfile.pending, (state) => {
+                        state.loading = true;
+                        state.error = null;
+                  })
+                  .addCase(updateUserProfile.fulfilled, (state, action) => {
+                        state.loading = false;
+                        state.userInfo = action.payload;
+                  })
+                  .addCase(updateUserProfile.rejected, (state, action) => {
+                        state.loading = false;
+                        state.error = action.payload || 'Erreur de mise à jour du profil';
+                  });
       },
 });
 

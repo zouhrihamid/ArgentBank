@@ -26,6 +26,8 @@ paths:
                                           $ref: '#/definitions/Transaction'
                         '400':
                               description: Requête invalide
+                        '404':
+                              description: transaction introuver
 
       /transactions/{transactionId}:
             get:
@@ -106,6 +108,7 @@ definitions:
                   balance:
                         type: number
                         format: float
+
                   accountId:
                         type: string
                   date:
