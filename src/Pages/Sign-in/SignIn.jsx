@@ -69,7 +69,7 @@ function SignIn() {
       };
 
       const handleSignUp = () => {
-            navigate('/');
+            navigate('/sign-up');
       };
       return (
             <main className="main bg-dark">

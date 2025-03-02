@@ -24,10 +24,9 @@ paths:
                                     type: array
                                     items:
                                           $ref: '#/definitions/Transaction'
-                        '400':
-                              description: Requête invalide
+
                         '404':
-                              description: transaction introuver
+                              description: Transactions non trouvées
 
       /transactions/{transactionId}:
             get:
@@ -69,8 +68,9 @@ paths:
                   responses:
                         '200':
                               description: Succès - Transaction mise à jour
-                        '400':
-                              description: Requête invalide
+
+                        '404':
+                              description: Transaction non trouvée
 
             delete:
                   summary: Supprimer une transaction
@@ -93,6 +93,7 @@ securityDefinitions:
             type: apiKey
             name: Authorization
             in: header
+
 definitions:
       Transaction:
             type: object
