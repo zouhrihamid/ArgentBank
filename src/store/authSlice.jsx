@@ -39,7 +39,6 @@ export const signUp = createAsyncThunk('user/signUp', async (userData, { rejectW
             const response = await signUpApi(userData);
             return response.data;
       } catch (error) {
-            console.error('Erreur API Signup:', error.response?.data || error);
             return rejectWithValue(error.response?.data || 'Erreur lors de l’inscription');
       }
 });
@@ -56,7 +55,6 @@ export const authenticateUser = createAsyncThunk('user/login', async ({ email, p
             }
             throw new Error('Email ou mot de passe incorrect');
       } catch (error) {
-            console.error(" Erreur d'authentification:", error);
             return rejectWithValue(error.response?.data || 'Erreur de connexion');
       }
 });
@@ -68,7 +66,6 @@ export const getUserProfile = createAsyncThunk('user/getProfile', async (token, 
 
             return response.data.body;
       } catch (error) {
-            console.error('Erreur lors de la récupération du profil:', error);
             return rejectWithValue(error.response?.data || 'Erreur de récupération du profil');
       }
 });

@@ -62,7 +62,7 @@ const SignUp = () => {
 
       return (
             <div className="main bg-dark">
-                  <section className="sign-in-content">
+                  <section className="sign-up-content">
                         <h2 className="create-account">{success ? '' : 'Créer un compte'}</h2>
 
                         {success ? (
