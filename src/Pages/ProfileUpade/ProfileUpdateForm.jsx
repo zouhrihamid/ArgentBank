@@ -54,8 +54,7 @@ const ProfileUpdateForm = () => {
                   await dispatch(getUserProfile(token));
                   setSuccess(true);
             } catch (err) {
-                  console.error('Erreur lors de la mise à jour du profil:', err);
-                  setError('Erreur lors de la mise à jour du profil. Veuillez réessayer.');
+                  setError('Erreur lors de la mise à jour du profil. Veuillez réessayer.', err);
             }
       };
 

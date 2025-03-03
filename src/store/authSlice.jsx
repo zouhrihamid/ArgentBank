@@ -76,11 +76,6 @@ export const updateUserProfile = createAsyncThunk('user/updateProfile', async ({
             const response = await updateUserProfileApi(updatedData, token);
             return response.data.user;
       } catch (error) {
-            console.error('Erreur lors de la mise à jour du profil:', error);
-
-            if (error.response) {
-                  console.error("Réponse de l'API:", error.response.data);
-            }
             return rejectWithValue(error.response?.data || 'Erreur de mise à jour');
       }
 });

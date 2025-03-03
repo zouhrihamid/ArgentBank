@@ -37,20 +37,12 @@ function SignIn() {
 
             try {
                   const result = await dispatch(authenticateUser({ email, password }));
-                  console.log('Résultat de authenticateUser:', result);
 
-                  if (!result.payload) {
-                        throw new Error('Email ou mot de passe incorrect');
-                  }
                   const token = result.payload;
-                  if (!token) {
-                        throw new Error('Token invalide');
-                  }
 
                   const profileResult = await dispatch(getUserProfile(token));
                   if (profileResult.error) {
-                        console.error('Erreur lors de la récupération du profil:', profileResult.error);
-                        throw new Error('Impossible de récupérer le profil utilisateur');
+                        throw new Error('Email ou mot de passe incorrect');
                   }
 
                   const userData = { ...profileResult.payload, token };
@@ -101,12 +93,6 @@ function SignIn() {
                               </p>
                         </form>
                   </section>
-                  {/* 
-                  {user && (
-                        <button onClick={handleLogout} className="logout-button">
-                              Log out
-                        </button>
-                  )} */}
             </main>
       );
 }
